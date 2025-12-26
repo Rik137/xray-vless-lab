@@ -1,0 +1,67 @@
+{
+  "inbounds" : [
+    {
+      "listen" : "<127.0.0.1>",
+      "port" : 1080,
+      "protocol" : "socks",
+      "settings" : {
+        "auth" : "noauth",
+        "udp" : true
+      },
+      "sniffing" : {
+        "destOverride" : [
+          "http",
+          "tls",
+          "quic"
+        ],
+        "enabled" : false,
+        "routeOnly" : true
+      },
+      "tag" : "socks"
+    }
+  ],
+  "outbounds" : [
+    {
+      "protocol" : "vless",
+      "settings" : {
+        "vnext" : [
+          {
+            "address" : "X.X.X.X",
+            "port" : 443,
+            "users" : [
+              {
+                "encryption" : "none",
+                "id" : "<id>"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings" : {
+        "network" : "xhttp",
+        "realitySettings" : {
+          "fingerprint" : "random",
+          "publicKey" : "<PUBLIC_KEY_HERE>",
+          "serverName" : "www.example.com",
+          "shortId" : "<SHORT_ID_HERE>",
+          "spiderX" : "\/"
+        },
+        "security" : "reality",
+        "xhttpSettings" : {
+          "host" : "www.example.com",
+          "mode" : "auto",
+          "path" : "<random_case>"
+        }
+      },
+      "tag" : "proxy"
+    },
+    {
+      "protocol" : "freedom",
+      "tag" : "direct"
+    },
+    {
+      "protocol" : "blackhole",
+      "tag" : "block"
+    }
+  ]
+}

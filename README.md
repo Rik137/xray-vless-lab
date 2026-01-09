@@ -22,4 +22,12 @@ sudo systemctl enable xray
 ```bash
 sudo systemctl status xray
 ```
-5. положить уже готовай config file c именем 
+5. положить уже готовай config file c именем config_client.json по пути
+
+```bash
+/usr/local/etc/xray/config.json
+```
+6. сгенрировать ключи доступа при помощи команды
+
+```bash
+xray 

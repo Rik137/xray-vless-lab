@@ -1,134 +1,129 @@
-# xray-vless-lab  
+# xray-vless-lab
 ---
-### Описание  
-Этот проект предназначен для пользователей, которым требуется надёжный и воспроизводимый способ обхода интернет-цензуры, DPI и сетевых ограничений.  
-Репозиторий содержит практическую инструкцию по развёртыванию и базовой настройке Xray Core с использованием протокола VLESS. Основной фокус сделан на стабильную работу в условиях активных блокировок, минимализм конфигурации и понимание происходящего, а не слепое копирование готовых решений.  
-Проект носит учебно-практический характер и предназначен для самостоятельного развёртывания на собственном сервере.  
-### Структура проекта  
-В проекте используются два конфигурационных файла:  
-server_config.json — конфигурация Xray на сервере (VPS)  
-client_config.json — конфигурация клиента (ПК / смартфон)  
-Алгоритм работы следующий:  
-Генерируются UUID и криптографические ключи  
-Полученные значения подставляются в оба конфигурационных файла  
-Сервер запускается и перезапускается  
-Клиент подключается к серверу  
-### Требования  
-Перед началом убедитесь, что выполнены следующие условия:  
-Арендован VPS в юрисдикции без агрессивной интернет-цензуры  
-(Европа, Азия, Латинская Америка)  
-Операционная система: Ubuntu 20.04+  
-Доступ к серверу по SSH с правами root или sudo  
-Базовое понимание Linux и сетевых сервисов  
-### Установка Xray  
-Установка производится из официального репозитория:  
+
+### Description
+This project is intended for users who need a reliable and reproducible way to bypass internet censorship, DPI, and network restrictions.  
+The repository contains a practical guide for deploying and basic configuration of Xray Core using the VLESS protocol. The main focus is on stable operation under active blocking conditions, minimal configuration, and understanding what is happening, rather than blindly copying ready-made solutions.  
+The project is educational and practical, designed for self-deployment on your own server.
+
+### Project Structure
+The project uses two configuration files:  
+- `server_config.json` — Xray configuration on the server (VPS)  
+- `client_config.json` — client configuration (PC / smartphone)
+
+The workflow is as follows:  
+1. UUIDs and cryptographic keys are generated  
+2. The generated values are inserted into both configuration files  
+3. The server is started and restarted  
+4. The client connects to the server
+
+### Requirements
+Before starting, make sure the following conditions are met:  
+- Rented VPS in a jurisdiction without aggressive internet censorship (Europe, Asia, Latin America)  
+- Operating system: Ubuntu 20.04+  
+- SSH access to the server with root or sudo privileges  
+- Basic understanding of Linux and network services
+
+### Installing Xray
+Installation is done from the official repository:  
 ```bash
 sudo apt update
 sudo apt install xray
-``` 
-После установки бинарный файл будет доступен по пути:  
-```bash
-/usr/bin/xray
 ```
-### Генерация UUID и ключей (обязательно)  
-Генерация UUID  
-Для работы протокола VLESS требуется уникальный UUID клиента.  
-```bash 
+After installation, the binary will be available at: /usr/bin/xray  
+Generating UUIDs and Keys (mandatory)  
+### Generating UUID  
+The VLESS protocol requires a unique client UUID.  
+```bash
 xray uuid
 ```
-Пример вывода:  
+Example output:  
 ```bash
 e7b0c2a4-9f3d-4b6a-8d91-xxxxxxxxxxxx
 ```
-Этот UUID используется и на сервере, и на клиенте.  
-Генерация ключей (X25519 / Reality)  
-Для конфигураций с шифрованием (Reality / TLS) необходимо сгенерировать пару ключей:  
+This UUID is used on both the server and the client.  
+Generating Keys (X25519 / Reality)  
+For configurations with encryption (Reality / TLS), a key pair must be generated:  
 ```bash
 xray x25519
 ```
-Пример вывода:
+Example output:  
 ```bash
 Private key:  <PRIVATE_KEY>
 Public key:   <PUBLIC_KEY>
 ```
-Private key используется только на сервере  
-Public key используется в клиентском конфиге  
-### Настройка сервера  
-Конфигурационный файл  
-Основной конфигурационный файл Xray на сервере должен находиться по пути:  
+Private key is used only on the server  
+Public key is used in the client configuration  
+Server Configuration  
+Configuration File  
+The main Xray configuration file on the server should be located at:  
 ```bash
 /usr/local/etc/xray/config.json
 ```
-Возьмите файл server_config.json из проекта и:  
-Вставьте сгенерированный UUID  
-Вставьте Private key  
-При необходимости измените порт  
-Пример фрагмента:  
+Take the server_config.json file from the project and:  
+Insert the generated UUID  
+Insert the Private key  
+Change the port if necessary  
+Example fragment:  
 ```bash
 {
   "id": "<UUID_here>"
 }
 ```
-Скопируйте файл:  
+Copy the file:  
 ```bash
 sudo mkdir -p /usr/local/etc/xray
 sudo cp server_config.json /usr/local/etc/xray/config.json
 ```
-После этого перезапустите сервис:  
-```bash
-sudo systemctl restart xray
-```
-Запуск и проверка сервера
-Добавление в автозагрузку:  
+Then restart the service:  
+sudo systemctl restart xray  
+Starting and Checking the Server  
+Add to autostart:  
 ```bash
 sudo systemctl enable xray
 ```
-Проверка статуса:  
+Check status:  
 ```bash
 sudo systemctl status xray
 ```
-Проверка логов:  
+Check logs:  
 ```bash
 journalctl -u xray -e
 ```
-Проверка, что порт прослушивается:  
+Check that the port is listening:
 ```bash
 ss -tulnp | grep xray
 ```
-### Настройка клиента
+### Client Configuration  
+To connect to the server, a client application with VLESS / Xray support is required.  
+Recommended Clients  
 
-Для подключения к серверу потребуется клиентское приложение с поддержкой VLESS / Xray.  
-Рекомендуемые клиенты  
 Windows / macOS / Linux  
 v2rayN  
-v2rayA 
+v2rayA  
 iOS / macOS  
 V2Box  
 Android  
-v2rayNG 
-Все перечисленные клиенты поддерживают Xray и VLESS.  
-Конфигурация клиента  
-Откройте файл client_config.json и:  
-Вставьте тот же UUID, что используется на сервере  
-Вставьте Public key  
-Укажите IP-адрес или домен вашего VPS  
-Укажите порт сервера  
-После этого:  
-импортируйте конфигурацию в клиентское приложение  
-подключитесь к серверу  
-Проверка работы  
-После подключения клиента:  
-проверьте доступ к заблокированным ресурсам  
-убедитесь, что трафик идёт через VPS  
-при ошибках смотрите логи сервера, а не меняйте конфиг наугад  
-Безопасность и замечания  
-Не используйте стандартные порты без необходимости  
-Ограничьте доступ к серверу с помощью ufw или iptables  
-Не храните приватные ключи в публичных репозиториях  
-Регулярно обновляйте систему и Xray  
-Проект не предоставляет готовый VPN-сервис, а лишь инструменты и понимание для самостоятельного развёртывания.  
-Дисклеймер  
+v2rayNG  
+All listed clients support Xray and VLESS.  
+Configuring the Client  
+Open the client_config.json file and:  
 
----
-Автор не несёт ответственности за использование данного проекта.  
-Вы самостоятельно отвечаете за соблюдение законодательства своей страны и юрисдикции сервера.  
+Insert the same UUID used on the server  
+Insert the Public key  
+Specify your VPS IP or domain  
+Specify the server port  
+After that:  
+Import the configuration into the client application  
+Connect to the server  
+Checking Operation  
+After connecting the client:  
+Test access to blocked resources  
+Ensure traffic goes through the VPS  
+In case of errors, check server logs instead of randomly changing the config  
+Security and Notes  
+Do not use standard ports unless necessary  
+Restrict server access using ufw or iptables  
+Do not store private keys in public repositories  
+Regularly update the system and Xray  
+This project does not provide a ready-made VPN service but offers tools and knowledge for self-deployment.  
